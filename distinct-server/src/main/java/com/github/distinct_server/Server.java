@@ -42,7 +42,7 @@ public class Server {
 
 	public void startServer() throws TTransportException, UnknownHostException {
 		logger.info("start DistinctService on port:"+port);
-		JVMUtil.lockFileForOnlyProcess("distinct-service-port-"+port);
+		JVMUtil.lockFileForOnlyProcess("distinct-server-port-"+port);
 		
 		final DistinctService.Iface service = SpringContext.getBean("distinctService",DistinctService.Iface.class);
 		TServerTransport serverTransport = new TServerSocket(port);
