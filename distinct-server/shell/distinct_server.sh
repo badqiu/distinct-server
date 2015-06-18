@@ -1,7 +1,8 @@
 #!/bin/bash
 source /etc/profile
 
-shell_dir=$(dirname $_)
+cur_dir=$(dirname $0)
+shell_dir=${cur_dir/\./$(pwd)}
 
 ############  example ##################
 #distinct_server.sh -DdataDir=/data/bloomfilter_db -Dport=
