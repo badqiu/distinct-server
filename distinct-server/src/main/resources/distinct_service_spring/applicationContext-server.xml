@@ -6,8 +6,26 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
     default-autowire="byName" default-lazy-init="false">
 
+<!-- 应用属性文件读入 -->
+    <bean id="appProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    	<property name="ignoreResourceNotFound" value="true" />
+		<property name="locations">
+			<list>
+				<!-- 统一配置文件,通过JAVA CLASSPATH变量配置在外部目录中 -->
+				<value>classpath*:app.properties</value>
+				<value>/data/app/distinct-server/conf/app.properties</value>
+			</list>
+		</property>
+    </bean>
+    
+	<!-- PropertyPlaceholderConfigurer,用于spring ${placeholder}的解析 -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<property name="properties" ref="appProperties"/>
+	</bean>
+	
 	<bean id="multiBloomFilterDb" class="com.github.distinct_server.bloomfilter.MultiBloomFilterDb">
-		<property name="dataDir" value="/data/bloomfilter_db"></property>
+		<property name="dataDir" value="/data/bloomfilter_db/port_${port}/"></property>
 		<property name="dumpIntervalSeconds" value="1800"></property>
 	</bean>
 	

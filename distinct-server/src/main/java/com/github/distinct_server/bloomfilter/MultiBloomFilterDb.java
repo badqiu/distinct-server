@@ -5,9 +5,10 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
-public class MultiBloomFilterDb {
+public class MultiBloomFilterDb implements InitializingBean{
 	private static final Logger logger = LoggerFactory.getLogger(MultiBloomFilterDb.class);
 	private Map<String,BloomFilterDB> vhosts = new HashMap<String,BloomFilterDB>();
 	
@@ -43,5 +44,10 @@ public class MultiBloomFilterDb {
 		}
 		Assert.notNull(result,"not found vhost by name:"+vhost);
 		return result;
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		logger.info("init end,dataDir:"+dataDir+" dumpIntervalSeconds:"+dumpIntervalSeconds);
 	}
 }

@@ -66,8 +66,10 @@ public class Server {
 	}
 
 	public static void main(String[] args) throws TTransportException, UnknownHostException {
-		PropertiesHelper properties = new PropertiesHelper(System.getProperties());
-		Server server = new Server(properties.getInt("port", Constants.DEFAULT_PORT));
+		String port = System.getProperty("port",""+Constants.DEFAULT_PORT);
+		System.setProperty("port", port);
+		
+		Server server = new Server(Integer.parseInt(port));
 //		server.startNoBlockServer();
 		server.startServer();
 	}
