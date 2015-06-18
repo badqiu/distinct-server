@@ -93,11 +93,11 @@
 		    <version>2.3.2</version>
 		</dependency>
 
-	<dependency>
-	    <groupId>org.mvel</groupId>
-	    <artifactId>mvel2</artifactId>
-	    <version>2.2.1.Final</version>
-	</dependency>
+		<dependency>
+		    <groupId>org.mvel</groupId>
+		    <artifactId>mvel2</artifactId>
+		    <version>2.2.1.Final</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.google.guava</groupId>
@@ -339,6 +339,28 @@
 		<finalName>distinct-server</finalName>
 		
 		<plugins>
+		
+			<plugin>  
+			    <groupId>org.apache.maven.plugins</groupId>  
+			    <artifactId>maven-assembly-plugin</artifactId>  
+			    <version>2.4</version>  
+			    <configuration>  
+			        <appendAssemblyId>false</appendAssemblyId>  
+			        <descriptorRefs>
+	              		<descriptorRef>jar-with-dependencies</descriptorRef>
+	           	 	</descriptorRefs>  
+			    </configuration>  
+			    <executions>  
+			        <execution>  
+			            <id>make-assembly</id>  
+			            <phase>package</phase>  
+			            <goals>  
+			                <goal>single</goal>  
+			            </goals>  
+			        </execution>  
+			    </executions>  
+			</plugin> 
+			
 			<!-- compiler plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

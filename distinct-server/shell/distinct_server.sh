@@ -6,7 +6,7 @@ source /etc/profile
 ########################################
 params=$@
 
-cmd="java  -cp $ANA_HOME/target/distinct-server.jar:$ANA_HOME $params com.github.distinct_server.Server" 
+cmd="java  -cp ../target/distinct-server.jar:$ANA_HOME $params com.github.distinct_server.Server" 
 echo '-----------------------------------------------'
 echo $cmd
 echo '-----------------------------------------------'
