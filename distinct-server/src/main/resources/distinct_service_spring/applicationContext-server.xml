@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+    default-autowire="byName" default-lazy-init="false">
+
+	<bean id="multiBloomFilterDb" class="com.github.distinct_server.bloomfilter.MultiBloomFilterDb">
+		<property name="dataDir" value="/data/bloomfilter_db"></property>
+		<property name="dumpIntervalSeconds" value="1800"></property>
+	</bean>
+	
+	<bean id="distinctService" class="com.github.distinct_server.service.DistinctServiceImpl">
+		<property name="multiBloomFilterDb" ref="multiBloomFilterDb"></property>
+	</bean>
+	
+</beans>

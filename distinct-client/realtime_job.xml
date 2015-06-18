@@ -1,0 +1,35 @@
+
+
+
+<!-- 
+	内存数据类型: 常驻，定时定长
+		常驻应用场景： 维表
+		定时定长: 数据
+ -->
+<jobs database="dw">
+
+	<input>
+		<QueueInput></QueueInput>
+		<table></table>
+	</input>
+	
+	<cronInput cron="">
+		<JdbcInput></JdbcInput>
+		<table></table>
+	</cronInput>
+	
+	<cronInput cron="">
+		<JdbcInput></JdbcInput>
+		<table></table>
+	</cronInput>
+	
+	<job id="" length="10000" interval="5000" depends="">
+		<sql></sql>
+		<outputs>
+			<RedisOutput></RedisOutput>
+			<HdfsOutput></HdfsOutput>
+			<JdbcOutput></JdbcOutput>
+		</outputs>
+	</job>
+	
+</jobs>
