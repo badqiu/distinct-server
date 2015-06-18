@@ -23,11 +23,31 @@ exception RemoteException {
 
 service DistinctService {
 	/**
-	 * 发送消息
-	 * @param msg
+	 * 排重
+	 * @param request
 	 */
 	i32 bloomFilterNotContainsCountAndAdd(1:BloomFilterRequest request,2:string vhost,3:string bloomfilterName) throws (1:RemoteException e),
+	
+	/**
+	 * 批量排重
+	 * @param requestList
+	 */
 	map<string,i32> batchBloomFilterNotContainsCountAndAdd(1:list<BloomFilterRequest> requestList,2:string vhost,3:string bloomfilterName) throws (1:RemoteException e),
+	
+	/**
+	 * 删除bloomfilter
+	 */
+	boolean deleteBloomFilter(1:string vhost,2:string bloomfilterName),
+	
+	/**
+	 * bloomfilter是否包含数据
+	 */
+	boolean bloomFilterContains(1:string vhost,2:string bloomfilterName,3:list<string> datas),
+	
+	/**
+	 * bloomfilter添加数据
+	 */
+	void bloomFilterAdd(1:string vhost,2:string bloomfilterName,3:list<string> datas),
 	
 	void selectVhost(1:string vhost) throws (1:RemoteException e),
 
