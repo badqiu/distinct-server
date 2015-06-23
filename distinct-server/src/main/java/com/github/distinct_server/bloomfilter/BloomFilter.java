@@ -7,6 +7,7 @@ import java.util.BitSet;
 import java.util.Collection;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Implementation of a Bloom-filter, as described here:
@@ -439,10 +440,11 @@ public class BloomFilter<E> implements Serializable {
 
 	public int notContainsCountAndAdd(String group, Collection<Object> values) {
 		if(CollectionUtils.isEmpty(values)) return 0;
+		String trimGroup = StringUtils.isBlank(group) ? "" : group;
 		
 		int count = 0;
 		for(Object v : values) {
-			byte[] bytes = (group + v).getBytes();
+			byte[] bytes = (trimGroup + v).getBytes();
 			if(!contains(bytes)) {
 				count++;
 				add(bytes);
