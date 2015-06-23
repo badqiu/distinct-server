@@ -36,7 +36,7 @@ public class DistinctServiceImpl implements com.github.distinct_server.api.Disti
 		BloomFilterDB db = multiBloomFilterDb.getRequired(vhost);
 		PartitionBloomFilter partitionBloomFilter = db.get(bloomfilterName);
 		BloomFilter bloomFilter = partitionBloomFilter.getBloomFilter(request.getBloomfilterPartition());
-		int result = bloomFilter.notContainsCountAndAdd(request.getGroup(), request.getKeys());
+		int result = bloomFilter.notContainsCountAndAdd("", request.getKeys());
 		return result;
 	}
 

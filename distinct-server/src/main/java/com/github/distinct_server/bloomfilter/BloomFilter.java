@@ -438,13 +438,13 @@ public class BloomFilter<E> implements Serializable {
     }
     
 
-	public int notContainsCountAndAdd(String group, Collection<Object> values) {
-		if(CollectionUtils.isEmpty(values)) return 0;
-		String trimGroup = StringUtils.isBlank(group) ? "" : group;
+	public int notContainsCountAndAdd(String prefix, Collection<Object> keys) {
+		if(CollectionUtils.isEmpty(keys)) return 0;
+		String trimPrefix = StringUtils.isBlank(prefix) ? "" : prefix;
 		
 		int count = 0;
-		for(Object v : values) {
-			byte[] bytes = (trimGroup + v).getBytes();
+		for(Object v : keys) {
+			byte[] bytes = (trimPrefix + v).getBytes();
 			if(!contains(bytes)) {
 				count++;
 				add(bytes);
