@@ -42,7 +42,7 @@ service DistinctService {
 	/**
 	 * bloomfilter是否包含数据
 	 */
-	boolean bloomFilterContains(1:string vhost,2:string bloomfilterName,3:list<string> datas),
+	map<string,boolean> bloomFilterContainsAndAdd(1:string vhost,2:string bloomfilterName,3:set<string> datas),
 	
 	/**
 	 * bloomfilter添加数据

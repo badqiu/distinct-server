@@ -452,4 +452,16 @@ public class BloomFilter<E> implements Serializable {
 		}
 		return count;
 	}
+
+	@Override
+	public String toString() {
+		return "BloomFilter [bitSetSize=" + bitSetSize
+				+ ", bitsPerElement=" + bitsPerElement
+				+ ", expectedNumberOfFilterElements="
+				+ expectedNumberOfFilterElements + ", numberOfAddedElements="
+				+ numberOfAddedElements + ", k=" + k + ", changed=" + changed
+				+ "]";
+	}
+	
+	
 }

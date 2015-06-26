@@ -34,7 +34,8 @@ public class PartitionBloomFilter {
 		BloomFilter bf = partitions.get(partition);
 		if(bf == null) {
 			try {
-				bf = loadPartition(partition);
+				bf = loadBloomFilterByPartition(partition);
+				logger.info("loadBloomFilterByPartition(), partition:"+partition +" partitionFile:" + partitionFile(partition)  + " BloomFilter:"+bf);
 				partitions.put(partition,bf);
 			}catch(Exception e) {
 				throw new RuntimeException("error on load partition:"+partition,e);
@@ -43,10 +44,9 @@ public class PartitionBloomFilter {
 		return bf;
 	}
 
-	private BloomFilter loadPartition(String partition) throws FileNotFoundException, IOException, ClassNotFoundException {
+	private synchronized BloomFilter loadBloomFilterByPartition(String partition) throws FileNotFoundException, IOException, ClassNotFoundException {
 		Assert.hasText(partition,"partition must be not empty");
 		File file = partitionFile(partition);
-		logger.info("loadPartition(), partition:"+partition+",partitionFile:"+partitionFile(partition).getAbsolutePath());
 		if(file.exists()) {
 			ObjectInputStream ois = null;
 			try {
@@ -56,7 +56,7 @@ public class PartitionBloomFilter {
 				IOUtils.closeQuietly(ois);
 			}
 		}else {
-			return new BloomFilter(Integer.MAX_VALUE, Integer.MAX_VALUE);
+			return new BloomFilter(0.001,Integer.MAX_VALUE / 5);
 		}
 	}
 
@@ -97,7 +97,7 @@ public class PartitionBloomFilter {
 			File file = partitionFile(partition);
 			file.getParentFile().mkdirs();
 			
-			logger.info("start PartitionBloomFilter dump(), file:"+file);
+			logger.info("start PartitionBloomFilter dump(), file:"+file+" BloomFilter:"+bf);
 			ObjectOutputStream oos = null;
 			try {
 				oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file),128 * 1024));
