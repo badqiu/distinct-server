@@ -56,7 +56,7 @@ public class PartitionBloomFilter {
 				IOUtils.closeQuietly(ois);
 			}
 		}else {
-			return new BloomFilter(0.001,Integer.MAX_VALUE / 5);
+			return new BloomFilter(0.001,Integer.MAX_VALUE / 4);
 		}
 	}
 
