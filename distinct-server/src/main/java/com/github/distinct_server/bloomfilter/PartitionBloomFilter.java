@@ -66,7 +66,7 @@ public class PartitionBloomFilter {
 				long start = System.currentTimeMillis();
 				dump(partition);
 				long cost = System.currentTimeMillis() - start;
-				logger.info("dumped partition cost_seconds:"+(cost/1000)+" partition:"+partition);
+				logger.info("dumped partition cost_seconds:"+(cost/1000.0)+" partition:"+partition);
 			}catch(Exception e) {
 				logger.error("dump error",e);
 			}
