@@ -449,7 +449,7 @@ public class BloomFilter<E> implements Serializable {
 			if(v == null) {
 				continue;
 			}
-			if(v instanceof String || StringUtils.isBlank((String)v)) {
+			if(v instanceof String && StringUtils.isBlank((String)v)) {
 				continue;
 			}
 			
