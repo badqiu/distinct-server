@@ -37,6 +37,7 @@ public class Server {
 	}
 	
 	public Server(int port) {
+		this();
 		this.port = port;
 	}
 

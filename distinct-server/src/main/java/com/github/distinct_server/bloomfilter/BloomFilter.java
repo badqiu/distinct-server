@@ -446,6 +446,13 @@ public class BloomFilter<E> implements Serializable {
 		
 		int count = 0;
 		for(Object v : keys) {
+			if(v == null) {
+				continue;
+			}
+			if(v instanceof String || StringUtils.isBlank((String)v)) {
+				continue;
+			}
+			
 			byte[] bytes = (trimPrefix + v).getBytes();
 			if(!contains(bytes)) {
 				count++;
