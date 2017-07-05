@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
 import com.github.distinct_server.api.BloomFilterRequest;
@@ -14,9 +17,13 @@ import com.github.distinct_server.bloomfilter.BloomFilterDB;
 import com.github.distinct_server.bloomfilter.MultiBloomFilterDb;
 import com.github.distinct_server.bloomfilter.PartitionBloomFilter;
 
-public class DistinctServiceImpl implements com.github.distinct_server.api.DistinctService.Iface{
+public class DistinctServiceImpl implements com.github.distinct_server.api.DistinctService.Iface,InitializingBean{
 
+	private static Logger logger = LoggerFactory.getLogger(DistinctServiceImpl.class);
+	
 	private MultiBloomFilterDb multiBloomFilterDb = null;
+	
+	private boolean serviceOn = true;
 	
 	public MultiBloomFilterDb getMultiBloomFilterDb() {
 		return multiBloomFilterDb;
@@ -29,6 +36,7 @@ public class DistinctServiceImpl implements com.github.distinct_server.api.Disti
 	@Override
 	public int bloomFilterNotContainsCountAndAdd(BloomFilterRequest request, String vhost,
 			String bloomfilterName) throws RemoteException, TException {
+		assertServiceOn();
 		Assert.hasText(vhost,"vhost must be not empty");
 		Assert.hasText(bloomfilterName,"bloomfilterName must be not empty");
 		
@@ -40,9 +48,17 @@ public class DistinctServiceImpl implements com.github.distinct_server.api.Disti
 		return result;
 	}
 
+	private void assertServiceOn() {
+		if(serviceOn) return;
+		
+		throw new IllegalStateException("serviceOn=false,service alread stop");
+	}
+
 	@Override
 	public Map<String,Integer> batchBloomFilterNotContainsCountAndAdd(List<BloomFilterRequest> requests,String vhost,
 			String bloomfilterName) throws RemoteException, TException {
+		assertServiceOn();
+		
 		Map<String,Integer> result = new HashMap();
 		for(BloomFilterRequest request : requests) {
 			int count = bloomFilterNotContainsCountAndAdd(request,vhost,bloomfilterName);
@@ -64,6 +80,25 @@ public class DistinctServiceImpl implements com.github.distinct_server.api.Disti
 	@Override
 	public String ping() throws RemoteException, TException {
 		return "PONG";
+	}
+	
+	public void addDumpAllDataShutdownHook() {
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			public void run() {
+				serviceOn = false;
+				logger.info("start exec dump all data on ShutdownHook");
+				if(multiBloomFilterDb != null) {
+					multiBloomFilterDb.dumpAll();
+				}
+				logger.info("exec end dump all data on ShutdownHook");
+			}
+		});
+		logger.info("exec addDumpAllDataShutdownHook() end");
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		addDumpAllDataShutdownHook();
 	}
 
 }

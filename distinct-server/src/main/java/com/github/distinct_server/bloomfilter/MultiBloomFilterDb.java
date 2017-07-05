@@ -45,6 +45,16 @@ public class MultiBloomFilterDb implements InitializingBean{
 		Assert.notNull(result,"not found vhost by name:"+vhost);
 		return result;
 	}
+	
+	public void dumpAll() {
+		for(BloomFilterDB db : vhosts.values()) {
+			try {
+				db.dump();
+			}catch(Exception e) {
+				logger.error("error on dump data on db:"+db,e);
+			}
+		}
+	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {

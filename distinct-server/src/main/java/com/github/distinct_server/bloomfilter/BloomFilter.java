@@ -3,8 +3,10 @@ import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -442,9 +444,10 @@ public class BloomFilter<E> implements Serializable {
 
 	public int notContainsCountAndAdd(String prefix, Collection<Object> keys) {
 		if(CollectionUtils.isEmpty(keys)) return 0;
+		
 		String trimPrefix = StringUtils.isBlank(prefix) ? "" : prefix;
 		
-		int count = 0;
+		List<String> resultKeys = new ArrayList<String>(keys.size());
 		for(Object v : keys) {
 			if(v == null) {
 				continue;
@@ -453,10 +456,27 @@ public class BloomFilter<E> implements Serializable {
 				continue;
 			}
 			
-			byte[] bytes = (trimPrefix + v).getBytes();
-			if(!contains(bytes)) {
+			resultKeys.add(trimPrefix + v);
+		}
+		return notContainsCountAndAdd((List)resultKeys);
+	}
+	
+	
+	public int notContainsCountAndAdd(Collection<E> keys) {
+		if(CollectionUtils.isEmpty(keys)) return 0;
+		
+		int count = 0;
+		for(E key : keys) {
+			if(key == null) {
+				continue;
+			}
+			if(key instanceof String && StringUtils.isBlank((String)key)) {
+				continue;
+			}
+			
+			if(!contains(key)) {
 				count++;
-				add(bytes);
+				add(key);
 			}
 		}
 		return count;
