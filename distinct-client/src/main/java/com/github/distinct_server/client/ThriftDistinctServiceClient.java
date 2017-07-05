@@ -93,7 +93,9 @@ class ThriftDistinctServiceClient extends GenericObjectPoolConfig implements Ifa
 	@Override
 	public void destroy() throws Exception {
 		if(clientPool != null) {
-			clientPool.clear();
+//			clientPool.invalidateObject(clientPool.borrowObject());
+//			clientPool.clear();
+			clientPool.close();
 		}
 	}
 	
@@ -212,7 +214,7 @@ class ThriftDistinctServiceClient extends GenericObjectPoolConfig implements Ifa
 	}
 	
 	private class ClientPoolableObjectFactory extends BasePooledObjectFactory<DistinctService.Client> {
-		final Map<Client,TTransport> clientTTransportMap = new Hashtable<DistinctService.Client, TTransport>();
+		
 		public DistinctService.Client makeClient() throws Exception {
 			TTransport transport = new TSocket(host, port,connectionTimeout);
 			TProtocol protocol = new TBinaryProtocol(transport);
@@ -222,19 +224,18 @@ class ThriftDistinctServiceClient extends GenericObjectPoolConfig implements Ifa
 			
 			Assert.isTrue(validateObject(client),"client ping() error");
 			
-			clientTTransportMap.put(client, transport);
-			logger.info("connected_to_server:"+host+":"+port+" by username:"+username+" clientPool.numActive:"+clientPool.getNumActive()+" clientPool.numIdle:"+clientPool.getNumIdle()+" clientTTransportMap.size:"+clientTTransportMap.size());
+			logger.info("connected_to_server:"+host+":"+port+" by username:"+username+" clientPool.numActive:"+clientPool.getNumActive()+" clientPool.numIdle:"+clientPool.getNumIdle());
 			return client;
 		}
 		
-		public void destroyObject(DistinctService.Client obj) throws Exception {
-			TTransport transport = clientTTransportMap.remove(obj);
-			if(transport != null) {
-				logger.info("destroyObject() closed_transport, server:"+host+":"+port+" by username:"+username+" clientPool.numActive:"+clientPool.getNumActive()+" clientPool.numIdle:"+clientPool.getNumIdle()+" clientTTransportMap.size:"+clientTTransportMap.size());
-				transport.close();
-			}
-		}
-		
+		@Override
+	    public void destroyObject(PooledObject<DistinctService.Client> p)throws Exception  {
+			 DistinctService.Client client = p.getObject();
+			 logger.info("destroyObject() closed_transport, server:"+host+":"+port+" by username:"+username+" clientPool.numActive:"+clientPool.getNumActive()+" clientPool.numIdle:"+clientPool.getNumIdle());
+			 closeTransport(client.getOutputProtocol());
+			 closeTransport(client.getInputProtocol());
+	    }
+		 
 		public boolean validateObject(Client obj) {
 			String ping = null;
 			try {
@@ -265,5 +266,12 @@ class ThriftDistinctServiceClient extends GenericObjectPoolConfig implements Ifa
 		public PooledObject<Client> wrap(Client obj) {
 			return new DefaultPooledObject(obj);
 		}
+	}
+	
+	private static void closeTransport(TProtocol protocol) {
+		if(protocol == null) return;
+		TTransport transport = protocol.getTransport();
+		if(transport == null) return;
+		transport.close();
 	}
 }

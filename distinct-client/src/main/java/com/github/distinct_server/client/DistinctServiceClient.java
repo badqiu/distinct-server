@@ -76,8 +76,7 @@ public class DistinctServiceClient implements InitializingBean,DisposableBean{
 	}
 
 	public int bloomFilterNotContainsCountAndAdd(BloomFilterRequest request,String bloomfilterName) {
-		return client.bloomFilterNotContainsCountAndAdd(request, vhost,
-				bloomfilterName);
+		return client.bloomFilterNotContainsCountAndAdd(request, vhost,bloomfilterName);
 	}
 
 	public Map<String, Integer> batchBloomFilterNotContainsCountAndAdd(List<BloomFilterRequest> requestList,String bloomfilterName) {
