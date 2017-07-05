@@ -22,7 +22,7 @@ public class PartitionBloomFilter {
 	private static Logger logger = LoggerFactory.getLogger(PartitionBloomFilter.class);
 	
 	private String baseDir;
-	private Map<String,BloomFilter> partitions = new HashMap();
+	private Map<String,BloomFilter> partitions = new HashMap(200);
 	
 	public PartitionBloomFilter(String baseDir) {
 		super();

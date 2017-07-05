@@ -22,7 +22,7 @@ public class BloomFilterDB {
 	private String baseDir = null;
 	private int dumpIntervalSeconds = DEFAULT_DUMP_INTERVAL_SECONDS;
 	
-	private Map<String,PartitionBloomFilter> db = new ConcurrentHashMap<String, PartitionBloomFilter>();
+	private Map<String,PartitionBloomFilter> db = new ConcurrentHashMap<String, PartitionBloomFilter>(100);
 	
 	public BloomFilterDB(String baseDir) {
 		this(baseDir,DEFAULT_DUMP_INTERVAL_SECONDS);
