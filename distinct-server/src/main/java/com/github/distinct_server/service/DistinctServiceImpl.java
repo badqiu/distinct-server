@@ -34,18 +34,19 @@ public class DistinctServiceImpl implements com.github.distinct_server.api.Disti
 	}
 
 	@Override
-	public int bloomFilterNotContainsCountAndAdd(BloomFilterRequest request, String vhost,
-			String bloomfilterName) throws RemoteException, TException {
+	public int bloomFilterNotContainsCountAndAdd(BloomFilterRequest request, String vhost,String bloomfilterName) throws RemoteException, TException {
 		assertServiceOn();
 		Assert.hasText(vhost,"vhost must be not empty");
 		Assert.hasText(bloomfilterName,"bloomfilterName must be not empty");
 		
 //		String vhost = request.getVhost();
+		//FIXME 需要初始化好partition,避免创建bloomfilter耗时太多，现在没有同步，会导致耗时太多
 		BloomFilterDB db = multiBloomFilterDb.getRequired(vhost);
 		PartitionBloomFilter partitionBloomFilter = db.get(bloomfilterName);
 		BloomFilter bloomFilter = partitionBloomFilter.getBloomFilter(request.getBloomfilterPartition());
-		int result = bloomFilter.notContainsCountAndAdd("", request.getKeys());
-		return result;
+		synchronized(bloomFilter) {
+			return bloomFilter.notContainsCountAndAdd("", request.getKeys());
+		}
 	}
 
 	private void assertServiceOn() {

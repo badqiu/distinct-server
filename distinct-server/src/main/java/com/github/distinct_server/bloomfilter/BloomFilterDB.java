@@ -42,6 +42,7 @@ public class BloomFilterDB {
 				String bloomFilterDir = baseDir + "/" + bloomFilterName;
 				result = new PartitionBloomFilter(bloomFilterDir);
 				db.put(bloomFilterName,result);
+				logger.info("create PartitionBloomFilter by name:"+bloomFilterName+" on dir:"+bloomFilterDir);
 			}
 		}
 		return result;
