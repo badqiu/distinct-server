@@ -55,4 +55,22 @@ public class BloomFilterTest {
 //		System.out.println(bf.notContainsCountAndAdd(Arrays.asList("1","2","3")));
 	}
 	
+	int cnt = 0;
+	@Test
+	public void testSync() throws InterruptedException {
+		long cost = MultiThreadTestUtils.executeAndWait(100, new Runnable() {
+			@Override
+			public void run() {
+				for(int i = 0; i < 10000 * 100; i++) {
+					synchronized (bf) {
+						cnt = cnt + 1;
+					}
+				}
+				System.out.println(cnt+" cnt/100="+cnt/100);
+			}
+		});
+
+		System.out.println(10000 * 100 * 1000 / cost);
+	}
+	
 }
