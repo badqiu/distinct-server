@@ -58,19 +58,21 @@ public class BloomFilterTest {
 	int cnt = 0;
 	@Test
 	public void testSync() throws InterruptedException {
-		long cost = MultiThreadTestUtils.executeAndWait(100, new Runnable() {
+		final int threadCount =6;
+		long cost = MultiThreadTestUtils.executeAndWait(threadCount, new Runnable() {
 			@Override
 			public void run() {
-				for(int i = 0; i < 10000 * 100; i++) {
+				
+				for(int i = 0; i < 1000000 * threadCount; i++) {
 					synchronized (bf) {
 						cnt = cnt + 1;
 					}
 				}
-				System.out.println(cnt+" cnt/100="+cnt/100);
+				System.out.println(cnt+" cnt/100="+cnt/threadCount);
 			}
 		});
 
-		System.out.println(10000 * 100 * 1000 / cost);
+		System.out.println(1000000L * threadCount * 1000 / cost);
 	}
 	
 }

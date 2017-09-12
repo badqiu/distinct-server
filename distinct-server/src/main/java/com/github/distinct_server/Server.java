@@ -55,7 +55,7 @@ public class Server {
 		Factory portFactory = new TBinaryProtocol.Factory(true, true);
 
 		Args args = new Args(serverTransport);
-		args.maxWorkerThreads(2000);
+		args.maxWorkerThreads(100);
 		args.minWorkerThreads(8);
 		args.processor(processor);
 		args.protocolFactory(portFactory);

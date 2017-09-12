@@ -41,12 +41,17 @@ public class DistinctServiceImpl implements com.github.distinct_server.api.Disti
 		
 //		String vhost = request.getVhost();
 		//FIXME 需要初始化好partition,避免创建bloomfilter耗时太多，现在没有同步，会导致耗时太多
-		BloomFilterDB db = multiBloomFilterDb.getRequired(vhost);
-		PartitionBloomFilter partitionBloomFilter = db.get(bloomfilterName);
-		BloomFilter bloomFilter = partitionBloomFilter.getBloomFilter(request.getBloomfilterPartition());
+		BloomFilter bloomFilter = lookupBloomFilter(request, vhost,bloomfilterName);
 		synchronized(bloomFilter) {
 			return bloomFilter.notContainsCountAndAdd("", request.getKeys());
 		}
+	}
+
+	private synchronized BloomFilter lookupBloomFilter(BloomFilterRequest request,String vhost, String bloomfilterName) {
+		BloomFilterDB db = multiBloomFilterDb.getRequired(vhost);
+		PartitionBloomFilter partitionBloomFilter = db.get(bloomfilterName);
+		BloomFilter bloomFilter = partitionBloomFilter.getBloomFilter(request.getBloomfilterPartition());
+		return bloomFilter;
 	}
 
 	private void assertServiceOn() {
